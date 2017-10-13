@@ -117,12 +117,12 @@ parser.add_argument("--checkonly", help="enable debug mode. No requests will be 
 args = parser.parse_args()
 
 
-version = "1.0.0"
+version = "1.0.1"
 headers = dict()
 headers["User-Agent"] = "boots_of_haste"
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable this since we're sending requests through Burp/local proxy
-p = {"http": "http://".join(args.proxy), "https": "https://".join(args.proxy)}
+p = {"http": "http://" + args.proxy, "https": "https://" + args.proxy}
 
 
 printSplash()
