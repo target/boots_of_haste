@@ -16,7 +16,8 @@ def sendRequest(requestUrl, requestMethod, requestHeaders):
         else:
             print "Unsupported Method: " + str(requestMethod)
     except Exception as error:
-        print "Error occured: %s" % type(error)
+        if args.verbose:
+            print "Error occured on %s - %s" % (requestUrl, type(error))
     return r
 
 
@@ -25,6 +26,8 @@ def processEndpoints(_endpoints):
     if(args.verbose):
         print "\nProcessing endpoint information..."
     for _host in _endpoints:
+        print "\n[*] Readying requests for host %s" % _host['name']
+        print "Found %s ports" % len(_host['ports'])
         for _port in _host['ports']:
             if _port['protocol'] == 'tcp':
                 if _port['ssl'] == 'true':
@@ -37,7 +40,7 @@ def processEndpoints(_endpoints):
 
                 if args.checkonly == "false":
                     sendRequest(_url, "GET", headers)
-
+    print "Host complete"
 
 def parseNmapXML():
     print "\nParsing Nmap XML file " + str(args.input)
@@ -108,7 +111,7 @@ def printSplash():
 
 
 parser = argparse.ArgumentParser(description="Boots of Haste - automating Burp requests from Nmap XML files")
-parser.add_argument("-i", "--input", help="the Nmap XML file to parse")
+parser.add_argument("-i", "--input", help="the Nmap XML file to parse", required=True)
 parser.add_argument("-p", "--proxy", help="IP:Port of proxy to use. Defaults to localhost:8080.", default="127.0.0.1:8080")
 parser.add_argument("-v", "--verbose", help="enable verbose output", action="store_true")
 parser.add_argument("-t", "--timeout", help="request timeout in seconds, defaults to 2", default="2")
@@ -117,7 +120,7 @@ parser.add_argument("--checkonly", help="enable debug mode. No requests will be 
 args = parser.parse_args()
 
 
-version = "1.0.1"
+version = "1.0.2"
 headers = dict()
 headers["User-Agent"] = "boots_of_haste"
 
